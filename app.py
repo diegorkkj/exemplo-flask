@@ -27,22 +27,25 @@ userList = [
 
 @app.route('/', methods=['GET'])
 def index():
-    return user
+    return userList
 
-# ############### POST ########################
+################# POST ########################
 
 @app.route('/user', methods=['POST'])
 def login():
     item = request.json
-    userList.append(item)  
+    userList.append(item)
     return userList
 
 ############### UPDATE ########################
 
-@app.route('/update/<int:key_update>', methods=['PUT'])
-def update_user(key_update):
-    user["ID"] = key_update
-    return "ID Alterado"
+@app.route('/update/<string:nomeAntigo>/<string:nomeNovo>', methods=['PUT'])
+def update_user(nomeAntigo, nomeNovo):
+    for dicionario in userList:
+        if dicionario["Nome"] == nomeAntigo:
+            dicionario["Nome"] = nomeNovo
+            return "Nome Alterado"
+    return "Nome não encontrado"
 
 ############### DELETE ########################
 
