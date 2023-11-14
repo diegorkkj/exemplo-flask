@@ -44,7 +44,7 @@ def update_user(nomeAntigo, nomeNovo):
     for dicionario in userList:
         if dicionario["Nome"] == nomeAntigo:
             dicionario["Nome"] = nomeNovo
-            return "Nome Alterado"
+            return "Nome alterado"
     return "Nome não encontrado"
 
 ############### DELETE ########################
