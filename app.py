@@ -14,7 +14,7 @@ nome = "Carlos"
 
 userList = [
     {
-        "Nome" : "Carlos",
+        "Nome" : "Carlos", 
         "idade": "23",
         "Cidade" : "Jundiai"
     },
@@ -53,8 +53,8 @@ def update_user(nomeAntigo, nomeNovo):
 def delete_user(user_id):
     if user_id == user["ID"]:
         user.pop("ID")
-        return "Id deletado da lista"
-    return "Id Não encontrado"
+        return "ID deletado da lista"
+    return "ID Não encontrado"
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
