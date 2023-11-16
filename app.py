@@ -1,60 +1,65 @@
-############### GET #########################
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request 
+from flask_cors import CORS
+import pandas as pd
 
 app = Flask(__name__)
+CORS(app)
 
-user = {
-    "ID" : 10,
-    "Nome" : "Carlos",
-    "idade": "23",
-    "Cidade" : "Jundiai"
-}
+try:
+    open('Tarefas.csv', 'x')
+    with open("Tarefas.csv", "w") as arquivo:
+         arquivo.write("ID,TAREFA\n") 
+except Exception as e:
+    pass
 
-nome = "Carlos"
+@app.route("/")
+def homepage():
+  return("API ONLINE")
 
-userList = [
-    {
-        "Nome" : "Carlos", 
-        "idade": "23",
-        "Cidade" : "Jundiai"
-    },
-    {
-        "Nome" : "Thiago",
-        "idade": "29",
-        "Cidade" : "Louveira"
-    }
-]
+############### GET ########################
+@app.route("/list", methods=['GET'])
+def listarTarefas():    
+    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = tarefas.to_dict('records')    
+    return jsonify(tarefas)
 
-@app.route('/', methods=['GET'])
-def index():
-    return userList
+############### POST ########################
+@app.route("/add", methods=['POST'])
+def addTarefas():
+    item = request.json 
+    tarefa_name = item["Tarefa"].replace(" ", "_") 
+    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = tarefas.to_dict('records')
+    id = len(tarefas) + 1
+    with open("Tarefas.csv", "a") as arquivo:
+         arquivo.write(f"{id},{tarefa_name}\n")
 
-################# POST ########################
-
-@app.route('/user', methods=['POST'])
-def login():
-    item = request.json
-    userList.append(item)
-    return userList
+    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = tarefas.to_dict('records')        
+    return jsonify(tarefas)
 
 ############### UPDATE ########################
-
-@app.route('/update/<string:nomeAntigo>/<string:nomeNovo>', methods=['PUT'])
-def update_user(nomeAntigo, nomeNovo):
-    for dicionario in userList:
-        if dicionario["Nome"] == nomeAntigo:
-            dicionario["Nome"] = nomeNovo
-            return "Nome alterado"
-    return "Nome não encontrado"
+@app.route('/updateTarefa/<string:tarefa_antiga>/<string:tarefa_nova>', methods=['PUT'])
+def update_user(tarefa_antiga, tarefa_nova):
+    tarefas = pd.read_csv('Tarefas.csv') 
+    if tarefa_antiga in tarefas['TAREFA'].values: 
+        tarefas.loc[tarefas['TAREFA'] == tarefa_antiga, 'TAREFA'] = tarefa_nova 
+        tarefas.to_csv('Tarefas.csv', index=False)
+        tarefas = pd.read_csv('Tarefas.csv') 
+        tarefas = tarefas.to_dict('records') 
+        return f"Tarefa alterada: {tarefa_antiga} -> {tarefa_nova}"
+    return "Tarefa não encontrada"
 
 ############### DELETE ########################
-
-@app.route('/delete/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    if user_id == user["ID"]:
-        user.pop("ID")
-        return "ID deletado da lista"
-    return "ID Não encontrado"
+@app.route('/delete/<int:tarefa_id>', methods=['DELETE'])
+def delete_tarefa(tarefa_id):    
+    tarefas = pd.read_csv('Tarefas.csv')
+    if tarefa_id in tarefas["ID"].values:
+        tarefas = tarefas[tarefas["ID"] != tarefa_id]
+        tarefas["ID"] = range(1, len(tarefas) + 1)
+        tarefas.to_csv('Tarefas.csv', index=False)
+        return f"Tarefa com ID {tarefa_id} excluída"
+    return f"Tarefa com ID {tarefa_id} não encontrada"
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+    app.run(debug=True, host="0.0.0.0")
