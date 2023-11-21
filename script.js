@@ -1,12 +1,10 @@
 const tabela = document.querySelector('.tabela-js')
-
 axios.get('http://127.0.0.1:5000/list').then(function (resposta) {
     console.log(resposta.data);
     getData(resposta.data)
   }).catch(function(error){
     console.log(error)
   })
-
   function getData(dados){
     dados.map((item)=>{
       tabela.innerHTML += `
@@ -22,13 +20,10 @@ axios.get('http://127.0.0.1:5000/list').then(function (resposta) {
       `
     })
   }
-  
 const inputValor = document.getElementById('recipient-name').value;
-
 const data = {
   tarefa: inputValor
 };
-
 axios.post('http://127.0.0.1:5000/add', data)
   .then(response => {
     console.log(response.data);
@@ -37,76 +32,19 @@ axios.post('http://127.0.0.1:5000/add', data)
     console.error('Erro na requisição POST', error);
   });
 
+axios.put('http://127.0.0.1:5000/updateTarefa', updatedData)
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Erro na requisição PUT', error);
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // const updatedData = {
-// //   key: 'new value'
-// // }; 
-
-// // axios.put('http://127.0.0.1:5000/updateTarefa', updatedData)
-// //   .then(response => {
-// //     console.log(response.data);
-// //   })
-// //   .catch(error => {
-// //     console.error('Erro na requisição PUT', error);
-// //   });
-
-//   // axios.delete('http://127.0.0.1:5000/delete')
-//   // .then(response => {
-//   //   console.log(response.data);
-//   // })
-//   // .catch(error => {
-//   //   console.error('Erro na requisição DELETE', error);
-//   // });
+axios.delete('http://127.0.0.1:5000/delete')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Erro na requisição DELETE', error);
+  });
 
