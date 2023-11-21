@@ -1,15 +1,12 @@
 const tabela = document.querySelector('.tabela-js')
 
-// Faz uma requisição a um usuarío com um ID expecifico
 axios.get('http://127.0.0.1:5000/list').then(function (resposta) {
-    // manipula o sucesso da requisição
     console.log(resposta.data);
     getData(resposta.data)
-  }).catch(function(error){ // Tratamento de erro caso dê problema na requisição
+  }).catch(function(error){
     console.log(error)
   })
 
-  // Percorrer o objeto de uma array e imprimindo uma propriedade (nome)
   function getData(dados){
     dados.map((item)=>{
       tabela.innerHTML += `
@@ -24,11 +21,92 @@ axios.get('http://127.0.0.1:5000/list').then(function (resposta) {
       </tr>
       `
     })
-
   }
+  
+const inputValor = document.getElementById('recipient-name').value;
 
-axios.post('http://127.0.0.1:5000/add')
+const data = {
+  tarefa: inputValor
+};
 
-axios.put('http://127.0.0.1:5000/updateTarefa')
+axios.post('http://127.0.0.1:5000/add', data)
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Erro na requisição POST', error);
+  });
 
-axios.delete('http://127.0.0.1:5000/delete')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // const updatedData = {
+// //   key: 'new value'
+// // }; 
+
+// // axios.put('http://127.0.0.1:5000/updateTarefa', updatedData)
+// //   .then(response => {
+// //     console.log(response.data);
+// //   })
+// //   .catch(error => {
+// //     console.error('Erro na requisição PUT', error);
+// //   });
+
+//   // axios.delete('http://127.0.0.1:5000/delete')
+//   // .then(response => {
+//   //   console.log(response.data);
+//   // })
+//   // .catch(error => {
+//   //   console.error('Erro na requisição DELETE', error);
+//   // });
+
