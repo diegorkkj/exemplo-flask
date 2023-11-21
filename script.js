@@ -1,7 +1,7 @@
 const tabela = document.querySelector('.tabela-js')
 
 // Faz uma requisição a um usuarío com um ID expecifico
-axios.get('https://api--diegosenaisp.repl.co/list').then(function (resposta) {
+axios.get('http://127.0.0.1:5000/list').then(function (resposta) {
     // manipula o sucesso da requisição
     console.log(resposta.data);
     getData(resposta.data)
@@ -16,11 +16,11 @@ axios.get('https://api--diegosenaisp.repl.co/list').then(function (resposta) {
       <tr>
         <th scope="row">${item.ID}</th>
         <td>${item.TAREFA}</td>
-        <td><span class="material-symbols-outlined text-danger">
+        <td><button class="btn bg-white" type="button" data-bs-toggle="modal" data-bs-target="#modalDel"><span class="material-symbols-outlined text-danger">
         delete
-        </span><span class="material-symbols-outlined text-success">
+        </span></button> <button class="btn bg-white" type="button" data-bs-toggle="modal" data-bs-target="#modalEdit"><span class="material-symbols-outlined text-success">
         edit
-        </span></td>
+        </span></button></td>
       </tr>
       `
     })

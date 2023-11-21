@@ -27,28 +27,32 @@ def listarTarefas():
 @app.route("/add", methods=['POST'])
 def addTarefas():
     item = request.json 
-    tarefa_name = item["Tarefa"].replace(" ", "_") 
-    tarefas = pd.read_csv('Tarefas.csv')
-    tarefas = tarefas.to_dict('records')
+    tarefas = pd.read_csv('Tarefas.csv') 
+    tarefas = tarefas.to_dict('records') 
     id = len(tarefas) + 1
     with open("Tarefas.csv", "a") as arquivo:
-         arquivo.write(f"{id},{tarefa_name}\n")
+         arquivo.write(f"{id},{item['Tarefa']}\n")    
 
     tarefas = pd.read_csv('Tarefas.csv')
     tarefas = tarefas.to_dict('records')        
     return jsonify(tarefas)
 
 ############### UPDATE ########################
-@app.route('/updateTarefa/<string:tarefa_antiga>/<string:tarefa_nova>', methods=['PUT'])
-def update_user(tarefa_antiga, tarefa_nova):
-    tarefas = pd.read_csv('Tarefas.csv') 
-    if tarefa_antiga in tarefas['TAREFA'].values: 
-        tarefas.loc[tarefas['TAREFA'] == tarefa_antiga, 'TAREFA'] = tarefa_nova 
-        tarefas.to_csv('Tarefas.csv', index=False)
+@app.route('/updateTarefa', methods=['PUT'])
+def update_tarefa():
+    data = request.json
+    
+    if 'TAREFA_ANTIGA' in data and 'TAREFA_NOVA' in data:
+        tarefa_antiga = data['TAREFA_ANTIGA']
+        tarefa_nova = data['TAREFA_NOVA']
+
         tarefas = pd.read_csv('Tarefas.csv') 
-        tarefas = tarefas.to_dict('records') 
-        return f"Tarefa alterada: {tarefa_antiga} -> {tarefa_nova}"
-    return "Tarefa não encontrada"
+        tarefas.replace(tarefa_antiga, tarefa_nova, inplace=True, regex=True)
+        tarefas.to_csv('Tarefas.csv', index=False)
+        
+        return jsonify({"message": f"Tarefa alterada: {tarefa_antiga} -> {tarefa_nova}"})
+    
+    return jsonify({"error": "Dados inválidos para atualizar a tarefa"})
 
 ############### DELETE ########################
 @app.route('/delete/<int:tarefa_id>', methods=['DELETE'])
