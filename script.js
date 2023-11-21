@@ -1,7 +1,7 @@
 const tabela = document.querySelector('.tabela-js')
 
 // Faz uma requisição a um usuarío com um ID expecifico
-axios.get('http://127.0.0.1:5500/index.html/list').then(function (resposta) {
+axios.get('https://api--diegosenaisp.repl.co/list').then(function (resposta) {
     // manipula o sucesso da requisição
     console.log(resposta.data);
     getData(resposta.data)
