@@ -41,6 +41,30 @@
     </table>
 
   </main>
+  <!-- MODAL DE EDIÇÃO -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editModalLabel">Editar Tarefa</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="edit-tarefa" class="col-form-label">Editar a tarefa:</label>
+              <input type="text" class="form-control" id="edit-tarefa">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="save-edit-btn">Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -53,13 +77,13 @@
           <form>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Digite a tarefa:</label>
-              <input type="text" class="form-control" id="recipient-name">
+              <input type="text" class="form-control" id="tarefa">
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Descartar</button>
-          <button type="button" class="btn btn-primary">Adicionar</button>
+          <button type="button" class="btn btn-primary" id="add-tarefa">Adicionar</button>
         </div>
       </div>
     </div>

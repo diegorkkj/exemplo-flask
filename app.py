@@ -38,32 +38,36 @@ def addTarefas():
     return jsonify(tarefas)
 
 ############### UPDATE ########################
-@app.route('/updateTarefa', methods=['PUT'])
-def update_tarefa():
-    data = request.json
-    
-    if 'TAREFA_ANTIGA' in data and 'TAREFA_NOVA' in data:
-        tarefa_antiga = data['TAREFA_ANTIGA']
-        tarefa_nova = data['TAREFA_NOVA']
-
-        tarefas = pd.read_csv('Tarefas.csv') 
-        tarefas.replace(tarefa_antiga, tarefa_nova, inplace=True, regex=True)
-        tarefas.to_csv('Tarefas.csv', index=False)
-        
-        return jsonify({"message": f"Tarefa alterada: {tarefa_antiga} -> {tarefa_nova}"})
-    
-    return jsonify({"error": "Dados inválidos para atualizar a tarefa"})
+@app.route("/update/<int:id>", methods=['PUT'])
+def updateTarefas(id):
+    item = request.json  
+    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = tarefas.to_dict('records') 
+    with open("Tarefas.csv", "w") as arquivo:
+        arquivo.write("ID,TAREFA\n") 
+        for tarefa in tarefas:
+            if tarefa['ID'] != id:
+                arquivo.write(f"{tarefa['ID']},{tarefa['TAREFA']}\n") 
+            else:
+                arquivo.write(f"{id},{item['Tarefa']}\n") 
+    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = tarefas.to_dict('records')        
+    return jsonify(tarefas)
 
 ############### DELETE ########################
-@app.route('/delete/<int:tarefa_id>', methods=['DELETE'])
-def delete_tarefa(tarefa_id):    
+@app.route("/delete", methods=['DELETE'])
+def deleteTarefa():
+    data = request.json
+    id = data.get('id')
+    if id is None:
+        return jsonify({"error": "ID da tarefa não fornecido"}), 400
     tarefas = pd.read_csv('Tarefas.csv')
-    if tarefa_id in tarefas["ID"].values:
-        tarefas = tarefas[tarefas["ID"] != tarefa_id]
-        tarefas["ID"] = range(1, len(tarefas) + 1)
-        tarefas.to_csv('Tarefas.csv', index=False)
-        return f"Tarefa com ID {tarefa_id} excluída"
-    return f"Tarefa com ID {tarefa_id} não encontrada"
+    if id not in tarefas['ID'].values:
+        return jsonify({"error": "Tarefa não encontrada"}), 404
+    tarefas = tarefas.drop(tarefas[tarefas['ID'] == id].index)
+    tarefas['ID'] = range(1, len(tarefas) + 1)
+    tarefas.to_csv('Tarefas.csv', index=False)
+    return jsonify(tarefas.to_dict('records'))
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
