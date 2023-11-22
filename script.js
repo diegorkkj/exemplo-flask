@@ -69,67 +69,62 @@ document.addEventListener('DOMContentLoaded', function () {
 			})
 		})
 
-		// Defina o ID e a tarefa quando o botão de edição é clicado
-		document.addEventListener('DOMContentLoaded', function () {
-			// Adicione aqui o código anterior para adicionar tarefas à tabela
+		// Abrir modal de edição quando o botão de edição é clicado
+		document
+			.querySelector('.tabela-js')
+			.addEventListener('click', function (e) {
+				const editBtn = e.target.closest('.edit-btn')
+				if (editBtn) {
+					const row = editBtn.closest('tr')
+					const tarefa = row.querySelector('td').textContent
+					document.querySelector('#edit-tarefa').value = tarefa
+					document.querySelector('#save-edit-btn').dataset.id =
+						row.querySelector('th').textContent // Armazena o ID no botão de salvar edição
+					var editModal = new bootstrap.Modal(
+						document.getElementById('editModal')
+					)
+					editModal.show()
+				}
+			})
 
-			// Abrir modal de edição quando o botão de edição é clicado
-			document
-				.querySelector('.tabela-js')
-				.addEventListener('click', function (e) {
-					const editBtn = e.target.closest('.edit-btn')
-					if (editBtn) {
-						const row = editBtn.closest('tr')
-						const tarefa = row.querySelector('td').textContent
-						document.querySelector('#edit-tarefa').value = tarefa
-						document.querySelector('#save-edit-btn').dataset.id =
-							row.querySelector('th').textContent // Armazena o ID no botão de salvar edição
-						var editModal = new bootstrap.Modal(
-							document.getElementById('editModal')
-						)
-						editModal.show()
-					}
+		// Salvar alterações ao clicar no botão "Salvar Alterações"
+		document
+			.querySelector('#save-edit-btn')
+			.addEventListener('click', function () {
+				const tarefaupdate = document.querySelector('#edit-tarefa').value
+				const id = this.dataset.id // Obtém o ID armazenado no botão de salvar edição
+
+				if (id) {
+					axios
+						.put(`http://127.0.0.1:5000/update`, {
+							id: parseInt(id),
+							nova_tarefa: tarefaupdate,
+						})
+						.then(function () {
+							loadTasks()
+						})
+						.catch(function (error) {
+							console.error(error)
+						})
+						.finally(function () {
+							var editModal = new bootstrap.Modal(
+								document.getElementById('editModal')
+							)
+							editModal.hide()
+							document.querySelector('#save-edit-btn').dataset.id = null // Limpa o ID armazenado
+						})
+				}
+			})
+
+		function loadTasks() {
+			axios
+				.get(`http://127.0.0.1:5000/list`)
+				.then(function (resposta) {
+					getData(resposta.data)
 				})
-
-			// Salvar alterações ao clicar no botão "Salvar Alterações"
-			document
-				.querySelector('#save-edit-btn')
-				.addEventListener('click', function () {
-					const tarefaupdate = document.querySelector('#edit-tarefa').value
-					const id = this.dataset.id // Obtém o ID armazenado no botão de salvar edição
-
-					if (id) {
-						axios
-							.put(`http://127.0.0.1:5000/update`, {
-								id: parseInt(id),
-								nova_tarefa: tarefaupdate,
-							})
-							.then(function () {
-								loadTasks()
-							})
-							.catch(function (error) {
-								console.error(error)
-							})
-							.finally(function () {
-								var editModal = new bootstrap.Modal(
-									document.getElementById('editModal')
-								)
-								editModal.hide()
-								document.querySelector('#save-edit-btn').dataset.id = null // Limpa o ID armazenado
-							})
-					}
+				.catch(function (error) {
+					console.error(error)
 				})
-
-			function loadTasks() {
-				axios
-					.get(`http://127.0.0.1:5000/list`)
-					.then(function (resposta) {
-						getData(resposta.data)
-					})
-					.catch(function (error) {
-						console.error(error)
-					})
-			}
-		})
+		}
 	}
 })
