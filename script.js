@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 	const tabela = document.querySelector('.tabela-js')
 
-	// Obtenha tarefas da API e preencha a tabela ao carregar a página
 	axios
 		.get(`http://127.0.0.1:5000/list`)
 		.then(function (resposta) {
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			console.error(error)
 		})
 
-	// Função para popular a tabela com tarefas
 	function getData(dados) {
 		tabela.innerHTML = dados
 			.map(
@@ -32,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 	function todos_Eventos() {
-		// Adicione uma nova tarefa
+
 		document
 			.querySelector('#add-tarefa')
 			.addEventListener('click', function () {
@@ -52,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
 					})
 			})
 
-		// Exclua uma tarefa
 		document.querySelectorAll('.delete-btn').forEach(btn => {
 			btn.addEventListener('click', function (e) {
 				const id = e.target.closest('tr').querySelector('th').textContent
@@ -69,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			})
 		})
 
-		// Abrir modal de edição quando o botão de edição é clicado
 		document
 			.querySelector('.tabela-js')
 			.addEventListener('click', function (e) {
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					const tarefa = row.querySelector('td').textContent
 					document.querySelector('#edit-tarefa').value = tarefa
 					document.querySelector('#save-edit-btn').dataset.id =
-						row.querySelector('th').textContent // Armazena o ID no botão de salvar edição
+						row.querySelector('th').textContent
 					var editModal = new bootstrap.Modal(
 						document.getElementById('editModal')
 					)
@@ -87,12 +83,11 @@ document.addEventListener('DOMContentLoaded', function () {
 				}
 			})
 
-		// Salvar alterações ao clicar no botão "Salvar Alterações"
 		document
 			.querySelector('#save-edit-btn')
 			.addEventListener('click', function () {
 				const tarefaupdate = document.querySelector('#edit-tarefa').value
-				const id = this.dataset.id // Obtém o ID armazenado no botão de salvar edição
+				const id = this.dataset.id
 
 				if (id) {
 					axios
