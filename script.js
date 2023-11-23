@@ -71,8 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Obtém o ID da tarefa a ser excluída
                 const id = e.target.closest('tr').querySelector('th').textContent
                 // Faz uma requisição DELETE para excluir a tarefa
-                axios
-                    .delete(`http://127.0.0.1:5000/delete`, {
+                axios.delete(`http://127.0.0.1:5000/delete`, {
                         data: { id: parseInt(id) },
                     })
                     .then(function () {

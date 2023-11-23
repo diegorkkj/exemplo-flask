@@ -7,7 +7,7 @@ CORS(app)
 
 try:
     open('Tarefas.csv', 'x')
-    with open("Tarefas.csv", "w") as arquivo:
+    with open("Tarefas.csv", "a", encoding='utf-8') as arquivo:
          arquivo.write("ID,TAREFA\n") 
 except Exception as e:
     pass
@@ -19,7 +19,7 @@ def homepage():
 ############### GET ########################
 @app.route("/list", methods=['GET'])
 def listarTarefas():    
-    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = pd.read_csv('Tarefas.csv', encoding='utf-8')
     tarefas = tarefas.to_dict('records')    
     return jsonify(tarefas)
 
@@ -27,10 +27,10 @@ def listarTarefas():
 @app.route("/add", methods=['POST'])
 def addTarefas():
     item = request.json 
-    tarefas = pd.read_csv('Tarefas.csv') 
+    tarefas = pd.read_csv('Tarefas.csv', encoding='utf-8')
     tarefas = tarefas.to_dict('records') 
     id = len(tarefas) + 1
-    with open("Tarefas.csv", "a") as arquivo:
+    with open("Tarefas.csv", "a", encoding='utf-8') as arquivo:
          arquivo.write(f"{id},{item['Tarefa']}\n")    
 
     tarefas = pd.read_csv('Tarefas.csv')
@@ -41,16 +41,16 @@ def addTarefas():
 @app.route("/update/<int:id>", methods=['PUT'])
 def updateTarefas(id):
     item = request.json  
-    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = pd.read_csv('Tarefas.csv', encoding='utf-8')
     tarefas = tarefas.to_dict('records') 
-    with open("Tarefas.csv", "w") as arquivo:
+    with open("Tarefas.csv", "a", encoding='utf-8') as arquivo:
         arquivo.write("ID,TAREFA\n") 
         for tarefa in tarefas:
             if tarefa['ID'] != id:
                 arquivo.write(f"{tarefa['ID']},{tarefa['TAREFA']}\n") 
             else:
                 arquivo.write(f"{id},{item['Tarefa']}\n") 
-    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = pd.read_csv('Tarefas.csv', encoding='utf-8')
     tarefas = tarefas.to_dict('records')        
     return jsonify(tarefas)
 
@@ -61,7 +61,7 @@ def deleteTarefa():
     id = data.get('id')
     if id is None:
         return jsonify({"error": "ID da tarefa não fornecido"}), 400
-    tarefas = pd.read_csv('Tarefas.csv')
+    tarefas = pd.read_csv('Tarefas.csv', encoding='utf-8')
     if id not in tarefas['ID'].values:
         return jsonify({"error": "Tarefa não encontrada"}), 404
     tarefas = tarefas.drop(tarefas[tarefas['ID'] == id].index)
